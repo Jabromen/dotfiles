@@ -20,6 +20,9 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
+# print directory contents when entering it
+chpwd() ls
+
 # Use modern completion system
 autoload -Uz compinit
 compinit
