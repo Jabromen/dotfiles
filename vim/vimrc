@@ -1,0 +1,149 @@
+" Script to handle installing plugins
+so ~/dotfiles/vim/plug.vim
+
+" Remove exisiting autocmds
+autocmd!
+
+" To install plugins, run command 'PlugInstall'
+call plug#begin('~/.vim/plugged')
+" Fuzzy file finder
+Plug 'kien/ctrlp.vim'
+" Cross-language comment-toggle command
+Plug 'tpope/vim-commentary'
+" Color scheme
+Plug 'lifepillar/vim-solarized8'
+call plug#end()
+
+"""""""""""""""""""""""""
+"
+" BASIC CONFIGURATION
+"""""""""""""""""""""""""
+
+set nocompatible
+
+" Allow unsaved background buffers and remember marks/undo for them
+set hidden
+
+" Remember more commands
+set history=10000
+
+" Tab indentation
+" set tabstop=4
+" set softtabstop=4
+
+" Space indentation
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+
+set autoindent
+
+set laststatus=2
+
+set showmatch
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+
+set cursorline
+set cmdheight=1
+
+" Always show tab bar at the top
+set showtabline=2
+
+" Leave lines when scrolling off end of screen
+set scrolloff=3
+
+set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+
+" Allow backspacing over everything
+set backspace=indent,eol,start
+
+" Show incomplete commands
+set showcmd
+
+syntax on
+filetype plugin indent on
+
+set wildmode=longest,list
+set wildmenu
+
+" No prompt to read changed files
+set autoread
+
+" Split diffs vertically instead of horizontally
+set diffopt=vertical
+
+" Hide preview menu
+set completeopt=menuone
+
+" Show relative line numbers
+set number
+set relativenumber
+
+set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
+
+"""""""""""""""""""""""""
+"
+" COLORS
+"""""""""""""""""""""""""
+set background=dark
+let g:solarized_termtrans=1
+colorscheme solarized8
+
+"""""""""""""""""""""""""
+"
+" CUSTOM AUTOCMDS
+"""""""""""""""""""""""""
+
+" Jump to last cursor position when reopening a file
+autocmd BufReadPost *
+            \ if line("'\"") > 0 && line("'\"") <= line("$") |
+            \   exe "normal g`\"" |
+            \ endif
+
+"""""""""""""""""""""""""
+"
+" KEY MAPS
+"""""""""""""""""""""""""
+
+let mapleader=','
+
+" Move around splits with <c-hjkl>
+nnoremap <c-j> <c-w>j
+nnoremap <c-k> <c-w>k
+nnoremap <c-h> <c-w>h
+nnoremap <c-l> <c-w>l
+
+" Toggle previously opened file
+nnoremap <leader><leader> <c-^>
+
+" Select entire line in non-block visual mode
+nnoremap vv 0v$
+
+" Comment/uncomment lines
+nnoremap <leader>/ :Commentary<cr>
+vnoremap <leader>/ :Commentary<cr>
+
+" Make tab indent at beginning of line, else do completion
+" https://github.com/garybernhardt/dotfiles/blob/master/.vimrc
+function! InsertTabWrapper()
+    let col = col('.') - 1
+    if !col
+        return "\<tab>"
+    endif
+
+    let char = getline('.')[col - 1]
+    if char =~ '\k'
+        " There's an identifier before the cursor, so complete the identifier.
+        return "\<c-p>"
+    else
+        return "\<tab>"
+    endif
+endfunction
+inoremap <expr> <tab> InsertTabWrapper()
+inoremap <s-tab> <c-n>
+
