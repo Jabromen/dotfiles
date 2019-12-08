@@ -4,6 +4,8 @@
 
 autoload -U colors && colors
 
+source ~/dotfiles/zsh/git-prompt.sh
+
 setopt PROMPT_SUBST
 
 set_prompt() {
@@ -20,7 +22,8 @@ set_prompt() {
     # Git
     if git rev-parse --is-inside-work-tree 2> /dev/null | grep -q 'true' ; then
         PS1+=', '
-        PS1+="%{$fg[magenta]%}$(git rev-parse --abbrev-ref HEAD 2> /dev/null)%{$reset_color%}"
+        PS1+="%{$fg[magenta]%}$(__git_ps1 '%s')%{$reset_color%}"
+        # PS1+="%{$fg[magenta]%}$(git rev-parse --abbrev-ref HEAD 2> /dev/null)%{$reset_color%}"
         STATUS=$(git status --short | wc -l)
         if [ $STATUS -gt 0 ]; then
             PS1+="%{$fg[green]%}+$(echo $STATUS | awk '{$1=$1};1')%{$reset_color%}"
