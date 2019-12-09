@@ -5,9 +5,6 @@ promptinit
 
 setopt histignorealldups sharehistory
 
-# Use emacs keybindings even if our EDITOR is set to vi
-bindkey -e
-
 # Keep 1000 lines of history within the shell and save it to ~/.zsh_history:
 HISTSIZE=1000
 SAVEHIST=1000
@@ -21,6 +18,10 @@ alias egrep='egrep --color=auto'
 
 # print directory contents when entering it
 chpwd() ls
+
+# vi mode
+bindkey -v
+export KEYTIMEOUT=1
 
 # Use modern completion system
 autoload -Uz compinit
