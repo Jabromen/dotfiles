@@ -10,6 +10,8 @@ call plug#begin('~/.vim/plugged')
 Plug 'kien/ctrlp.vim'
 " Cross-language comment-toggle command
 Plug 'tpope/vim-commentary'
+" Auto-detect indentation
+Plug 'tpope/vim-sleuth'
 " Color scheme
 Plug 'lifepillar/vim-solarized8'
 call plug#end()
@@ -105,6 +107,8 @@ autocmd BufReadPost *
             \   exe "normal g`\"" |
             \ endif
 
+autocmd FileType python setlocal sw=4 sts=4 et
+
 """""""""""""""""""""""""
 "
 " KEY MAPS
@@ -128,6 +132,13 @@ nnoremap vv 0v$
 nnoremap <leader>/ :Commentary<cr>
 vnoremap <leader>/ :Commentary<cr>
 
+" Close all other splits
+nnoremap <leader>o :only<cr>
+
+" Open files in current buffer's directory
+nnoremap <leader>e :CtrlP <c-r>=expand('%:h')<cr><cr>
+nnoremap <leader>v :view <c-r>=expand('%:h')<cr>/
+
 " Make tab indent at beginning of line, else do completion
 " https://github.com/garybernhardt/dotfiles/blob/master/.vimrc
 function! InsertTabWrapper()
@@ -147,3 +158,23 @@ endfunction
 inoremap <expr> <tab> InsertTabWrapper()
 inoremap <s-tab> <c-n>
 
+"""""""""""""""""""""""""
+"
+" EXTENSION SETTINGS
+"""""""""""""""""""""""""
+
+" Commentary
+
+" Use // ... for commenting out lines instead of /* ... */
+autocmd FileType c,cpp setlocal commentstring=//\ %s
+
+" CtrlP
+
+" only look for files that are not ignored by git
+if isdirectory('.git')
+    let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
+endif
+
+" Netrw
+
+let g:netrw_banner=0 " disable banner by default in filebrowser
