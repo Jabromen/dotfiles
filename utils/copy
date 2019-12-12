@@ -4,6 +4,8 @@ if [[ $OSTYPE == darwin* ]]; then
   pbcopy
 elif [[ $OSTYPE == cygwin* ]]; then
   cat > /dev/clipboard
+elif grep -qE "(Microsoft|WSL)" /proc/version &> /dev/null; then
+  clip.exe
 else
   if [[ -x "$(command -v xclip)" ]]; then
     xclip -in -selection clipboard
