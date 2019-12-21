@@ -102,6 +102,9 @@ set background=dark
 let g:solarized_termtrans=1
 colorscheme solarized8
 
+hi CursorLine guifg=NONE guibg=#121212 gui=NONE ctermfg=NONE ctermbg=236 cterm=NONE
+hi Visual     guifg=NONE guibg=#212121 gui=NONE ctermfg=NONE ctermbg=238 cterm=NONE
+
 """""""""""""""""""""""""
 "
 " CUSTOM AUTOCMDS
