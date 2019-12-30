@@ -137,10 +137,6 @@ nnoremap <leader><leader> <c-^>
 " Select entire line in non-block visual mode
 nnoremap vv 0v$
 
-" Comment/uncomment lines
-nnoremap <leader>/ :Commentary<cr>
-vnoremap <leader>/ :Commentary<cr>
-
 " Close all other splits
 nnoremap <leader>o :only<cr>
 
@@ -166,6 +162,20 @@ function! InsertTabWrapper()
 endfunction
 inoremap <expr> <tab> InsertTabWrapper()
 inoremap <s-tab> <c-n>
+
+" Silver Searcher
+if executable('ag')
+    " use ag for grep
+    set grepprg=ag\ --nogroup\ --nocolor\ --vimgrep
+
+    " search for term and open quick-fix window with results
+    command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+
+    " search for term in project
+    nnoremap <leader>/ :Ag<space>
+    " search for current word in project
+    nnoremap <leader>* :Ag <cword><cr>
+endif
 
 """""""""""""""""""""""""
 "
