@@ -174,7 +174,7 @@ if executable('ag')
     " search for term in project
     nnoremap <leader>/ :Ag<space>
     " search for current word in project
-    nnoremap <leader>* :Ag <cword><cr>
+    nnoremap <leader>* :Ag -w <cword><cr>
 endif
 
 """""""""""""""""""""""""
