@@ -69,3 +69,11 @@ git_page_maybe() {
         less --quit-if-one-screen --no-init --RAW-CONTROL-CHARS --chop-long-lines
     fi
 }
+
+git_clean_merged_branch() {
+    branch_name="$(git symbolic-ref --short HEAD)"
+    git fetch origin master:master
+    git checkout master
+    git fetch --all --prune
+    git branch -d "$branch_name"
+}
