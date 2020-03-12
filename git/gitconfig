@@ -17,6 +17,7 @@
     fm = fetch origin master:master
     ds = diff --stat
     dh1 = diff HEAD~1
+    puo = !git push -u origin "$(git symbolic-ref --short HEAD)"
 
     # Fancy logging.
     #   h = head
