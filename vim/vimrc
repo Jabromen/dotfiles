@@ -123,7 +123,7 @@ autocmd FileType python setlocal sw=4 sts=4 et
 " KEY MAPS
 """""""""""""""""""""""""
 
-let mapleader=','
+let mapleader=' '
 
 " Move around splits with <c-hjkl>
 nnoremap <c-j> <c-w>j
