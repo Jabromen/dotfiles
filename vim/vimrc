@@ -134,6 +134,12 @@ nnoremap <c-l> <c-w>l
 " Toggle previously opened file
 nnoremap <leader><leader> <c-^>
 
+" Cycle between and close buffers
+nnoremap <leader>n :bnext<cr>
+nnoremap <leader>p :bprevious<cr>
+nnoremap <leader>d :bdelete<cr>
+nnoremap <leader>b :buffers<cr>:b
+
 " Select entire line in non-block visual mode
 nnoremap vv 0v$
 
