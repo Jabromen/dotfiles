@@ -150,6 +150,8 @@ nnoremap <leader>o :only<cr>
 nnoremap <leader>e :CtrlP <c-r>=expand('%:h')<cr><cr>
 nnoremap <leader>v :view <c-r>=expand('%:h')<cr>/
 
+nnoremap <leader>- :Explore<cr>
+
 " Make tab indent at beginning of line, else do completion
 " https://github.com/garybernhardt/dotfiles/blob/master/.vimrc
 function! InsertTabWrapper()
