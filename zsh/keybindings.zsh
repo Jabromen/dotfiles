@@ -22,3 +22,4 @@ fi
 bindkey '^[[1;5C' forward-word  # [Ctrl-RightArrow] - move forward one word
 bindkey '^[[1;5D' backward-word # [Ctrl-LeftArrow] - move backward one word
 bindkey '^H' backward-kill-word # [Ctrl-Backspace] - delete last word
+bindkey '^[[3;5~' kill-word     # [Ctrl-Delete] - delete forward word
