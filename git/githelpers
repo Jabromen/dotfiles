@@ -70,6 +70,14 @@ git_page_maybe() {
     fi
 }
 
+# Delete active local branch that was merged and deleted upstream.
+# Doesn't modify local files while pulling changes so incremental
+# build systems don't have to do a full rebuild.
+#
+# Updates the master branch with the changes from the current branch
+# Switches to master branch
+# Prunes the remote branches
+# Deletes old local branch
 git_clean_merged_branch() {
     branch_name="$(git symbolic-ref --short HEAD)"
     git fetch origin master:master
