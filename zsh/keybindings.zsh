@@ -23,3 +23,6 @@ bindkey '^[[1;5C' forward-word  # [Ctrl-RightArrow] - move forward one word
 bindkey '^[[1;5D' backward-word # [Ctrl-LeftArrow] - move backward one word
 bindkey '^H' backward-kill-word # [Ctrl-Backspace] - delete last word
 bindkey '^[[3;5~' kill-word     # [Ctrl-Delete] - delete forward word
+
+bindkey -s '^[[1;5A' 'cd ..\n' # [Ctrl-UpArrow] - cd to parent directory
+bindkey -s '^[[1;5B' 'cd -\n'  # [Ctrl-DownArrow] - cd to previous directory
