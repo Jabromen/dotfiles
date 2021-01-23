@@ -6,15 +6,32 @@ autocmd!
 
 " To install plugins, run command 'PlugInstall'
 call plug#begin('~/.vim/plugged')
+" GUI enhancements
+Plug 'itchyny/lightline.vim'
+Plug 'machakann/vim-highlightedyank'
+Plug 'andymass/vim-matchup'
+
 " Fuzzy file finder
+Plug 'airblade/vim-rooter'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
+
+" Semantic language support
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
 " Cross-language comment-toggle command
 Plug 'tpope/vim-commentary'
 " Auto-detect indentation
 Plug 'tpope/vim-sleuth'
+" Auto-close braces and quotations
+Plug 'jiangmiao/auto-pairs'
 " Color scheme
 Plug 'lifepillar/vim-solarized8'
+
+" Syntactic language support
+Plug 'cespare/vim-toml'
+Plug 'stephpy/vim-yaml'
+Plug 'rust-lang/rust.vim'
 
 " Install any local plugins
 if !empty(glob('~/.vimrc_plugins'))
@@ -22,6 +39,11 @@ if !empty(glob('~/.vimrc_plugins'))
 endif
 
 call plug#end()
+
+if has('nvim')
+    set guicursor=n-v-c:block-Cursor/lCursor,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
+    set inccommand=nosplit
+end
 
 """""""""""""""""""""""""
 "
@@ -48,7 +70,11 @@ set expandtab
 
 set autoindent
 
+set encoding=utf-8
+
 set laststatus=2
+
+set signcolumn=yes
 
 set showmatch
 set incsearch
@@ -56,11 +82,17 @@ set hlsearch
 set ignorecase
 set smartcase
 
+set colorcolumn=80
+
 set cursorline
+
+" Better display for messages
 set cmdheight=1
+" You will have bad experience for diagnostic messages when it's default 4000.
+set updatetime=300
 
 " Always show tab bar at the top
-set showtabline=2
+set showtabline=1
 
 " Leave lines when scrolling off end of screen
 set scrolloff=3
@@ -74,11 +106,10 @@ set backspace=indent,eol,start
 " Show incomplete commands
 set showcmd
 
+set nojoinspaces
+
 syntax on
 filetype plugin indent on
-
-set wildmode=longest,list
-set wildmenu
 
 " No prompt to read changed files
 set autoread
@@ -93,13 +124,31 @@ set completeopt=menuone
 set number
 set relativenumber
 
-set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
+set splitright
+set splitbelow
+
+" Permanent undo
+set undodir=~/.vimdid
+set undofile
+
+" Decent wildmenu
+set wildmenu
+set wildmode=list:longest
+set wildignore=.hg,.svn,*~,*.png,*.jpg,*.gif,*.settings,Thumbs.db,*.min.js,*.swp,publish/*,intermediate/*,*.o,*.hi,Zend,vendor
+
+set mouse=a
+
+set listchars=nbsp:¬,extends:»,precedes:«,trail:•
+
+" set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
 
 """""""""""""""""""""""""
 "
 " COLORS
 """""""""""""""""""""""""
+set t_Co=256
 set background=dark
+syntax on
 let g:solarized_termtrans=1
 colorscheme solarized8
 
@@ -117,7 +166,9 @@ autocmd BufReadPost *
             \   exe "normal g`\"" |
             \ endif
 
-autocmd FileType python setlocal sw=4 sts=4 et
+autocmd FileType python setlocal sw=4 sts=4 et colorcolumn=88
+
+autocmd FileType rust setlocal colorcolumn=100
 
 """""""""""""""""""""""""
 "
@@ -126,14 +177,28 @@ autocmd FileType python setlocal sw=4 sts=4 et
 
 let mapleader=' '
 
-" Move around splits with <c-hjkl>
-nnoremap <c-j> <c-w>j
-nnoremap <c-k> <c-w>k
-nnoremap <c-h> <c-w>h
-nnoremap <c-l> <c-w>l
+nnoremap ; :
+nnoremap - ;
+
+" Move around splits with <leader>hjkl
+nnoremap <leader>j <c-w>j
+nnoremap <leader>k <c-w>k
+nnoremap <leader>h <c-w>h
+nnoremap <leader>l <c-w>l
 
 " Toggle previously opened file
 nnoremap <leader><leader> <c-^>
+
+" Save file
+nnoremap <leader>w :w<cr>
+
+nnoremap <leader>m ct_
+
+nnoremap <c-h> ^
+nnoremap <c-l> $
+
+nnoremap <c-j> 5j
+nnoremap <c-k> 5k
 
 " Cycle between and close buffers
 nnoremap <leader>n :bnext<cr>
@@ -148,12 +213,29 @@ nnoremap vv 0v$
 nnoremap <leader>o :only<cr>
 
 " Open files in current buffer's directory
-nnoremap <leader>e :FZF <c-r>=expand('%:h')<cr><cr>
+nnoremap <leader>e :edit <c-r>=expand('%:h')<cr>/
 nnoremap <leader>v :view <c-r>=expand('%:h')<cr>/
 
 nnoremap <leader>- :Explore<cr>
 
 nnoremap <c-p> :FZF<cr>
+
+" Search results centered
+nnoremap <silent> n nzz
+nnoremap <silent> N Nzz
+nnoremap <silent> * *zz
+nnoremap <silent> # #zz
+nnoremap <silent> g* g*zz
+
+inoremap <c-j> <esc>
+vnoremap <c-j> <esc>
+cnoremap <c-j> <esc>
+inoremap <c-k> <esc>
+vnoremap <c-k> <esc>
+cnoremap <c-k> <esc>
+
+" shows/hides hidden characters
+nnoremap <leader>, :set invlist<cr>
 
 " Make tab indent at beginning of line, else do completion
 " https://github.com/garybernhardt/dotfiles/blob/master/.vimrc
@@ -174,19 +256,25 @@ endfunction
 inoremap <expr> <tab> InsertTabWrapper()
 inoremap <s-tab> <c-n>
 
-" Silver Searcher
-if executable('ag')
-    " use ag for grep
-    set grepprg=ag\ --nogroup\ --nocolor\ --vimgrep
+" search for term and open quick-fix window with results
+command -nargs=+ -complete=file -bar RgSearch silent! grep! <args>|cwindow|redraw!
+" search for current word in project
+nnoremap <leader>* :RgSearch -w <cword><cr>
 
-    " search for term and open quick-fix window with results
-    command -nargs=+ -complete=file -bar AgGrep silent! grep! <args>|cwindow|redraw!
+if executable('ag')
+    set grepprg=ag\ --nogroup\ --nocolor
 
     " search for term in project
     nnoremap <leader>/ :Ag<cr>
-    " search for current word in project
-    nnoremap <leader>* :AgGrep -w <cword><cr>
 endif
+if executable('rg')
+    set grepprg=rg\ --no-heading\ --vimgrep
+    set grepformat=%f:%l:%c:%m
+
+    " search for term in project
+    nnoremap <leader>/ :Rg<cr>
+endif
+
 
 """""""""""""""""""""""""
 "
@@ -217,3 +305,107 @@ let g:fzf_action = {
 " Netrw
 
 let g:netrw_banner=0 " disable banner by default in filebrowser
+
+" Lightline
+
+let g:lightline = {
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'cocstatus', 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'filename': 'LightlineFilename',
+      \   'cocstatus': 'coc#status'
+      \ },
+      \ }
+function! LightlineFilename()
+  return expand('%:t') !=# '' ? @% : '[No Name]'
+endfunction
+
+" Use auocmd to force lightline update.
+autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
+
+" rust
+let g:rustfmt_autosave = 1
+let g:rustfmt_emit_files = 1
+let g:rustfmt_fail_silently = 0
+let g:rust_clip_command = 'copy'
+
+let g:sneak#s_next = 1
+let g:vim_markdown_new_list_item_indent = 0
+let g:vim_markdown_auto_insert_bullets = 0
+let g:vim_markdown_frontmatter = 1
+
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-.> to trigger completion.
+inoremap <silent><expr> <c-.> coc#refresh()
+
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
+" position. Coc only does snippet and additional edit on confirm.
+if exists('*complete_info')
+  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+else
+  imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+endif
+
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming.
+nmap <leader>cn <Plug>(coc-rename)
+
+" Introduce function text object
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+xmap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap if <Plug>(coc-funcobj-i)
+omap af <Plug>(coc-funcobj-a)
+
+" Use <TAB> for selections ranges.
+nmap <silent> <TAB> <Plug>(coc-range-select)
+xmap <silent> <TAB> <Plug>(coc-range-select)
+
+" Find symbol of current document.
+nnoremap <silent> <leader>co  :<C-u>CocList outline<cr>
+
+" Search workspace symbols.
+nnoremap <silent> <leader>cs  :<C-u>CocList -I symbols<cr>
+
+" Implement methods for trait
+nnoremap <silent> <leader>ci  :call CocActionAsync('codeAction', '', 'Implement missing members')<cr>
+
+" Show actions available at this location
+nnoremap <silent> <leader>ca  :CocAction<cr>
