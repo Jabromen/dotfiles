@@ -227,13 +227,6 @@ nnoremap <silent> * *zz
 nnoremap <silent> # #zz
 nnoremap <silent> g* g*zz
 
-inoremap <c-j> <esc>
-vnoremap <c-j> <esc>
-cnoremap <c-j> <esc>
-inoremap <c-k> <esc>
-vnoremap <c-k> <esc>
-cnoremap <c-k> <esc>
-
 " shows/hides hidden characters
 nnoremap <leader>, :set invlist<cr>
 
