@@ -14,11 +14,12 @@
     ff = merge --ff-only
     noff = merge --no-ff
     fa = fetch --all
-    fm = fetch origin master:master
+    fm = !. ~/dotfiles/git/githelpers && git fetch origin "$(git_trunk_branch)":"$(git_trunk_branch)"
     ds = diff --stat
     dh1 = diff HEAD~1
     puo = !git push -u origin "$(git symbolic-ref --short HEAD)"
     cmb = "!. ~/dotfiles/git/githelpers && git_clean_merged_branch"
+    cf = clang-format
 
     # Fancy logging.
     #   h = head

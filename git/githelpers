@@ -70,6 +70,15 @@ git_page_maybe() {
     fi
 }
 
+# Helper function to check if main branch is called 'main' or 'master'
+git_trunk_branch() {
+    if git branch | grep -wq main ; then
+        echo main
+    else
+        echo master
+    fi
+}
+
 # Delete active local branch that was merged and deleted upstream.
 # Doesn't modify local files while pulling changes so incremental
 # build systems don't have to do a full rebuild.
@@ -79,9 +88,11 @@ git_page_maybe() {
 # Prunes the remote branches
 # Deletes old local branch
 git_clean_merged_branch() {
-    branch_name="$(git symbolic-ref --short HEAD)"
-    git fetch origin master:master
-    git checkout master
+    local branch_name="$(git symbolic-ref --short HEAD)"
+    local trunk="$(git_trunk_branch)"
+
+    git fetch origin $trunk:$trunk
+    git checkout $trunk
     git fetch --all --prune
     git branch -d "$branch_name"
 }
