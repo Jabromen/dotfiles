@@ -470,6 +470,10 @@ local on_attach = function(_, bufnr)
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
     vim.lsp.buf.format()
   end, { desc = 'Format current buffer with LSP' })
+
+  -- Don't have the LSP override default tag handling
+  -- Not sure if there's a better spot for this, but it works...
+  vim.bo.tagfunc = nil
 end
 
 -- Enable the following language servers
