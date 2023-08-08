@@ -190,13 +190,33 @@ vim.o.scrolloff = 4
 
 vim.o.cursorline = true
 
+vim.o.tabstop = 4
+vim.o.softtabstop = 4
+vim.o.shiftwidth = 4
+vim.o.expandtab = true
+
 -- Enable mouse mode
 vim.o.mouse = 'a'
 
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.o.clipboard = 'unnamedplus'
+if os.getenv('WSL_DISTRO_NAME') then
+  vim.g.clipboard = {
+                     name = 'WslClipboard',
+                     copy = {
+                        ['+'] = 'clip.exe',
+                        ['*'] = 'clip.exe',
+                      },
+                     paste = {
+                        ['+'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+                        ['*'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+                     },
+                     cache_enabled = false,
+                   }
+else
+  vim.o.clipboard = 'unnamedplus'
+end
 
 -- Enable break indent
 vim.o.breakindent = true
@@ -224,6 +244,15 @@ vim.o.termguicolors = true
 vim.o.splitright = true
 vim.o.splitbelow = true
 
+vim.api.nvim_create_autocmd('BufReadPost', {
+  pattern = '*',
+  callback = function ()
+    if vim.fn.line("'\"") > 0 and vim.fn.line("'\"") <= vim.fn.line("$") then
+      vim.cmd("silent normal g'\"")
+    end
+  end
+})
+
 -- [[ Basic Keymaps ]]
 
 -- Keymaps for better default experience
@@ -236,6 +265,10 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 
 -- Keep last yank when pasting
 vim.keymap.set('x', '<leader>p', '"_dP')
+
+-- Yank to system clipboard
+vim.keymap.set({'n', 'v'}, '<leader>y', '"+y')
+vim.keymap.set('n', '<leader>Y', '"+Y')
 
 -- Easier command entry, double tap ; to get old functionality
 vim.keymap.set({'n', 'v'}, ';', ':')
@@ -509,7 +542,7 @@ cmp.setup {
     ['<C-Space>'] = cmp.mapping.complete {},
     ['<CR>'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
+      select = false,
     },
     ['<Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
