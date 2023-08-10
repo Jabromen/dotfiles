@@ -224,6 +224,9 @@ vim.o.breakindent = true
 -- Save undo history
 vim.o.undofile = true
 
+-- Enable dictionary word completion [Ctrl-x Ctrl-k]
+vim.o.dictionary = '/usr/share/dict/words'
+
 -- Case-insensitive searching UNLESS \C or capital in search
 vim.o.ignorecase = true
 vim.o.smartcase = true
@@ -279,6 +282,12 @@ vim.keymap.set('n', '<leader>j', '<C-w>j')
 vim.keymap.set('n', '<leader>k', '<C-w>k')
 vim.keymap.set('n', '<leader>h', '<C-w>h')
 vim.keymap.set('n', '<leader>l', '<C-w>l')
+
+-- Faster cursor movement
+vim.keymap.set({'n', 'v'}, '<c-j>', '5j')
+vim.keymap.set({'n', 'v'}, '<c-k>', '5k')
+vim.keymap.set({'n', 'v'}, '<c-h>', '^')
+vim.keymap.set({'n', 'v'}, '<c-l>', '$')
 
 -- Close all other splits
 vim.keymap.set('n', '<leader>o', ':only<cr>')
@@ -447,6 +456,14 @@ local on_attach = function(_, bufnr)
     vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
   end
 
+  local imap = function(keys, func, desc)
+    if desc then
+      desc = 'LSP: ' .. desc
+    end
+
+    vim.keymap.set('i', keys, func, { buffer = bufnr, desc = desc })
+  end
+
   nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
   nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
@@ -459,7 +476,7 @@ local on_attach = function(_, bufnr)
 
   -- See `:help K` for why this keymap
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-  nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+  imap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
