@@ -158,6 +158,7 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     dependencies = {
       'nvim-treesitter/nvim-treesitter-textobjects',
+      'nvim-treesitter/nvim-treesitter-context',
     },
     build = ':TSUpdate',
   },
@@ -301,6 +302,12 @@ vim.keymap.set('n', 'N', 'Nzz', { silent = true })
 vim.keymap.set('n', '*', '*zz', { silent = true })
 vim.keymap.set('n', '#', '#zz', { silent = true })
 vim.keymap.set('n', 'g*', 'g*zz', { silent = true })
+
+-- Center cursor when scrolling
+vim.keymap.set('n', '<c-d>', '<c-d>zz', { silent = true })
+vim.keymap.set('n', '<c-u>', '<c-u>zz', { silent = true })
+vim.keymap.set('n', '<c-f>', '<c-f>zz', { silent = true })
+vim.keymap.set('n', '<c-b>', '<c-b>zz', { silent = true })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
