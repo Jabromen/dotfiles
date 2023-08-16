@@ -323,6 +323,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
+-- auto-pairs doesn't play nice with netrw buffers
+vim.api.nvim_create_autocmd('FileType', { pattern = 'netrw', command = 'let b:autopairs_enabled = 0' })
+
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
