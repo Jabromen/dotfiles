@@ -277,6 +277,9 @@ vim.keymap.set('x', '<leader>p', '"_dP')
 vim.keymap.set({'n', 'v'}, '<leader>y', '"+y')
 vim.keymap.set('n', '<leader>Y', '"+Y')
 
+-- Alt+Backspace to delete word
+vim.keymap.set({'i', 'c'}, '<m-bs>', '<c-w>')
+
 -- Easier command entry, double tap ; to get old functionality
 vim.keymap.set({'n', 'v'}, ';', ':')
 vim.keymap.set({'n', 'v'}, ';;', ';')
@@ -572,6 +575,7 @@ mason_lspconfig.setup_handlers {
 local cmp = require 'cmp'
 local luasnip = require 'luasnip'
 require('luasnip.loaders.from_vscode').lazy_load()
+require('luasnip.loaders.from_vscode').lazy_load({ paths = { '~/.snippets' } })
 luasnip.config.setup {}
 
 cmp.setup {
