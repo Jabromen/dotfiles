@@ -1,12 +1,34 @@
 #!/usr/bin/env bash
 
 # originally from https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer
-# set environment variable TMUX_SESSIONIZER_DIRS to add more directories to search (only searches home by default)
 
-if [[ $# -eq 1 ]]; then
-    selected="$1"
-else
-    selected="$(find ~/ $TMUX_SESSIONIZER_DIRS -mindepth 1 -maxdepth 1 -type d | sort -u | fzf)"
+USAGE="$(basename $0) <options> [session_dir]
+
+Args:
+    -a : choose an existing session to attach onto
+    -h : display usage and exit
+    session_dir: directory to open in tmux session, choose from dirs set in \$TMUX_SESSIONIZER_DIRS if this arg isn't given"
+
+while getopts "ha" flag; do
+    case "$flag" in
+        a) selected="$(tmux ls -F '#{session_name} (#{pane_current_path})' | fzf --select-1 --exit-0 | awk '{print $1}')"
+            if [[ -z $selected ]]; then
+                exit 0
+            fi
+            ;;
+        h) echo "$USAGE" && exit 0 ;;
+        *) echo "$USAGE" && exit 1 ;;
+    esac
+done
+
+shift $(($OPTIND - 1))
+
+if [[ -z $selected ]]; then
+    if [[ $# -gt 0 ]]; then
+        selected="$1"
+    else
+        selected="$(find ~/ $TMUX_SESSIONIZER_DIRS -mindepth 1 -maxdepth 1 -type d | sort -u | fzf)"
+    fi
 fi
 
 if [[ -z $selected ]]; then
