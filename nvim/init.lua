@@ -251,6 +251,14 @@ vim.o.termguicolors = true
 vim.o.splitright = true
 vim.o.splitbelow = true
 
+-- Fix python indentation with multiline parens
+vim.g.python_indent = {
+  open_paren = 'shiftwidth()',
+  nested_paren = 'shiftwidth()',
+  continue = 'shiftwidth()',
+  closed_paren_align_last_line = false
+}
+
 vim.api.nvim_create_autocmd('BufReadPost', {
   pattern = '*',
   callback = function ()
