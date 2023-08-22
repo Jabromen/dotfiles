@@ -35,8 +35,11 @@ require('lazy').setup({
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
-  -- Auto close braces
-  'jiangmiao/auto-pairs',
+  {
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    opts = {}
+  },
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -331,9 +334,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
--- auto-pairs doesn't play nice with netrw buffers
-vim.api.nvim_create_autocmd('FileType', { pattern = 'netrw', command = 'let b:autopairs_enabled = 0' })
-
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
@@ -581,13 +581,15 @@ mason_lspconfig.setup_handlers {
   end
 }
 
--- [[ Configure nvim-cmp ]]
--- See `:help cmp`
-local cmp = require 'cmp'
+-- [[ Configure luasnip ]]
 local luasnip = require 'luasnip'
 require('luasnip.loaders.from_vscode').lazy_load()
 require('luasnip.loaders.from_vscode').lazy_load({ paths = { '~/.snippets' } })
 luasnip.config.setup {}
+
+-- [[ Configure nvim-cmp ]]
+-- See `:help cmp`
+local cmp = require 'cmp'
 
 cmp.setup {
   snippet = {
@@ -628,7 +630,57 @@ cmp.setup {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
   },
+  preselect = 'None'
 }
+
+-- [[ Configure nvim-autopairs ]]
+local cmp_autopairs = require 'nvim-autopairs.completion.cmp'
+cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
+
+local npairs = require'nvim-autopairs'
+local Rule = require'nvim-autopairs.rule'
+local cond = require 'nvim-autopairs.conds'
+
+local brackets = { { '(', ')' }, { '[', ']' }, { '{', '}' } }
+npairs.add_rules {
+  -- Rule for a pair with left-side ' ' and right side ' '
+  Rule(' ', ' ')
+    -- Pair will only occur if the conditional function returns true
+    :with_pair(function(opts)
+      -- We are checking if we are inserting a space in (), [], or {}
+      local pair = opts.line:sub(opts.col - 1, opts.col)
+      return vim.tbl_contains({
+        brackets[1][1] .. brackets[1][2],
+        brackets[2][1] .. brackets[2][2],
+        brackets[3][1] .. brackets[3][2]
+      }, pair)
+    end)
+    :with_move(cond.none())
+    :with_cr(cond.none())
+    -- We only want to delete the pair of spaces when the cursor is as such: ( | )
+    :with_del(function(opts)
+      local col = vim.api.nvim_win_get_cursor(0)[2]
+      local context = opts.line:sub(col - 1, col + 2)
+      return vim.tbl_contains({
+        brackets[1][1] .. '  ' .. brackets[1][2],
+        brackets[2][1] .. '  ' .. brackets[2][2],
+        brackets[3][1] .. '  ' .. brackets[3][2]
+      }, context)
+    end)
+}
+-- For each pair of brackets we will add another rule
+for _, bracket in pairs(brackets) do
+  npairs.add_rules {
+    -- Each of these rules is for a pair with left-side '( ' and right-side ' )' for each bracket type
+    Rule(bracket[1] .. ' ', ' ' .. bracket[2])
+      :with_pair(cond.none())
+      :with_move(function(opts) return opts.char == bracket[2] end)
+      :with_del(cond.none())
+      :use_key(bracket[2])
+      -- Removes the trailing whitespace that can occur without this
+      :replace_map_cr(function(_) return '<C-c>2xi<CR><C-c>O' end)
+  }
+end
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
