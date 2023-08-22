@@ -32,6 +32,9 @@ require('lazy').setup({
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
 
+  -- Built-in rust.vim is out of date, install latest...
+  'rust-lang/rust.vim',
+
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
@@ -253,6 +256,9 @@ vim.o.termguicolors = true
 
 vim.o.splitright = true
 vim.o.splitbelow = true
+
+-- Fix c-style indentations
+vim.o.cinoptions = 'L0,(s,Ws,J1,j1,m1'
 
 -- Fix python indentation with multiline parens
 vim.g.python_indent = {
