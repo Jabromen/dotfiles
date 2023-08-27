@@ -25,7 +25,7 @@ shift $(($OPTIND - 1))
 
 if [[ -z $selected ]]; then
     if [[ $# -gt 0 ]]; then
-        selected="$1"
+        selected="$(realpath "$1")"
     else
         selected="$(find ~/ $TMUX_SESSIONIZER_DIRS -mindepth 1 -maxdepth 1 -type d | sort -u | fzf)"
     fi
