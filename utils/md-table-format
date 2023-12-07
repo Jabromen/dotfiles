@@ -1,0 +1,111 @@
+#!/usr/bin/env python
+"""
+Aligns the columns of a markdown table.
+
+Reads the table from stdin and prints the formatted table to stdout.
+"""
+
+
+from collections.abc import Iterator
+import sys
+
+
+def columns(row: str) -> list[str]:
+    """
+    Convert a table row from a string to a list of columns with leading and trailing whitespace stripped.
+    """
+    return [col.strip() for col in row.strip().strip("|").split("|")]
+
+
+def column_widths(table: list[str]) -> Iterator[list[int]]:
+    """
+    Yields the width of each column per row skipping the delimiter line row.
+    """
+    # headers
+    yield [len(c) for c in columns(table[0])]
+    # entries
+    for row in table[2:]:
+        yield [len(c) for c in columns(row)]
+
+
+def max_column_widths(table: list[str]) -> list[int]:
+    """
+    Get the max width of each column across the whole table.
+    """
+    width_iter = column_widths(table)
+
+    maxes = next(width_iter)
+
+    for row in width_iter:
+        for i, (col_max, row_max) in enumerate(zip(maxes, row)):
+            maxes[i] = max(col_max, row_max)
+
+    return maxes
+
+
+def column_alignments(table: list[str]) -> list[str]:
+    """
+    Get the alignment of each column (right, left, center, or none)
+    """
+    alignments = []
+    for line in columns(table[1]):
+        if line.startswith(":") and not line.endswith(":"):
+            alignments.append("l")
+        elif not line.startswith(":") and line.endswith(":"):
+            alignments.append("r")
+        elif not line.startswith(":") and not line.endswith(":"):
+            alignments.append("n")
+        else:
+            alignments.append("c")
+    return alignments
+
+
+def pad_entry(entry: str, width: int, align: str) -> str:
+    """
+    Pad a table entry to the specified width and alignment.
+    """
+    padding = width - len(entry)
+
+    if align == "r":
+        left_pad = padding
+        right_pad = 0
+    elif align == "c":
+        left_pad = padding // 2
+        right_pad = padding - left_pad
+    else:
+        left_pad = 0
+        right_pad = padding
+
+    return " " * (left_pad + 1) + entry + " " * (right_pad + 1)
+
+
+def pad_line(width: int, align: str) -> str:
+    """
+    Generate a header delimiter line of a certain width and alignment.
+    """
+    first_char = ":" if align in ("l", "c") else "-"
+    last_char = ":" if align in ("r", "c") else "-"
+    return first_char + "-" * width + last_char
+
+
+def formatted_table(table: list[str]) -> Iterator[str]:
+    """
+    Yields the formatted lines of the table.
+    """
+    widths = max_column_widths(table)
+    aligns = column_alignments(table)
+    # headers
+    yield "|" + "|".join(pad_entry(c, w, a) for c, w, a in zip(columns(table[0]), widths, aligns)) + "|"
+    yield "|" + "|".join(pad_line(w, a) for w, a in zip(widths, aligns)) + "|"
+    # entries
+    for row in table[2:]:
+        yield "|" + "|".join(pad_entry(c, w, a) for c, w, a in zip(columns(row), widths, aligns)) + "|"
+
+
+def main():
+    for line in formatted_table(sys.stdin.readlines()):
+        print(line)
+
+
+if __name__ == "__main__":
+    main()
