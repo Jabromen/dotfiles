@@ -70,9 +70,12 @@ git_page_maybe() {
     fi
 }
 
-# Step through current branch's commit history showing the diff for each commit
+# Step through current branch's or specified range's commit history showing the diff for each commit
 git_show_commits() {
-    for commit in $(git rev-list --reverse $(git_trunk_branch)..HEAD); do
+    # Default to branches since master/main if unspecified
+    local range="${@:-$(git_trunk_branch)..HEAD}"
+
+    for commit in $(git rev-list --reverse $range); do
         # Force pager so short commits aren't skipped.
         git show $commit --color=always | less --RAW-CONTROL-CHARS --clear-screen --quit-on-intr
     done
