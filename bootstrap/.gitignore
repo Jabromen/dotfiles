@@ -1,0 +1,19 @@
+/* ctags tag file */
+tags
+!tags/
+
+/* pyenv local version file */
+.python-version
+
+/* clangd lsp settings */
+.clangd
+
+/* EditorConfig settings */
+.editorconfig
+
+/* pyright settings */
+pyrightconfig.json
+
+/* lsp cache */
+/compile_commands.json
+/.cache

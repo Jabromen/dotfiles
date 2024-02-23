@@ -1,0 +1,4 @@
+[include]
+    path = ~/dotfiles/git/.gitconfig
+[code]
+    excludesfile = ~/.gitignore
