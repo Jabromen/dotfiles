@@ -1,0 +1,38 @@
+# Custom color scheme
+set fish_color_normal f8f8f2
+set fish_color_command 00af00
+set fish_color_quote ffd700
+set fish_color_redirection d0d0d0
+set fish_color_end d0d0d0
+set fish_color_error ffd700
+set fish_color_param d0d0d0
+set fish_color_comment 808080
+set fish_color_match --background=brblue
+set fish_color_selection --background=44475a
+set fish_color_select_match --background=44475a
+set fish_color_history_current --bold
+set fish_color_operator 50fa7b
+set fish_color_escape ff79c6
+set fish_color_cwd 50fa7b
+set fish_color_cwd_root red
+set fish_color_valid_path --underline
+set fish_color_autosuggestion 626262
+set fish_color_user 8be9fd
+set fish_color_host bd93f9
+set fish_color_cancel ff5555 --reverse
+set fish_pager_color_background
+set fish_pager_color_prefix 8be9fd
+set fish_pager_color_progress 6272a4
+set fish_pager_color_completion f8f8f2
+set fish_pager_color_description 6272a4
+set fish_pager_color_selected_background --background=44475a
+set fish_pager_color_selected_prefix 8be9fd
+set fish_pager_color_selected_completion f8f8f2
+set fish_pager_color_selected_description 6272a4
+set fish_pager_color_secondary_background
+set fish_color_host_remote
+set fish_pager_color_secondary_description
+set fish_color_keyword
+set fish_color_option
+set fish_pager_color_secondary_prefix
+set fish_pager_color_secondary_completion
