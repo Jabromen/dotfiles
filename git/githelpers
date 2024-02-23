@@ -70,6 +70,14 @@ git_page_maybe() {
     fi
 }
 
+# Step through current branch's commit history showing the diff for each commit
+git_show_commits() {
+    for commit in $(git rev-list --reverse $(git_trunk_branch)..HEAD); do
+        # Force pager so short commits aren't skipped.
+        git show $commit --color=always | less --RAW-CONTROL-CHARS --clear-screen --quit-on-intr
+    done
+}
+
 # Helper function to check if main branch is called 'main' or 'master'
 git_trunk_branch() {
     if git branch | grep -wq main ; then
