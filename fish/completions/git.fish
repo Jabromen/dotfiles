@@ -62,3 +62,6 @@ complete -f -c git -n __fish_git_needs_command -a la -d "alias: Log all commits 
 # b/bs
 complete -f -c git -n __fish_git_needs_command -a b -d "alias: All branches"
 complete -f -c git -n __fish_git_needs_command -a bs -d "alias: All branches sorted by last commit date"
+
+# dio
+complete -f -c git -n __fish_git_needs_command -a dio -d "alias: Show diff between local and remote branch"
