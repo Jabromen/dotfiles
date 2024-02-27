@@ -10,8 +10,8 @@ function fish_prompt
         printf ', %s%s%s' (set_color red) $return_code (set_color normal)
     end
     # git prompt if in repo: string sub to remove parens from fish_vcs_prompt
-    if set vcs_prompt (fish_vcs_prompt | string sub -s 3 -e -1)
-        printf ', %s%s' (set_color magenta) $vcs_prompt
+    if test "$(git rev-parse --is-inside-work-tree 2> /dev/null)" = 'true'
+        printf ', %s%s' (set_color magenta) (fish_vcs_prompt | string sub -s 3 -e -1)
         # number of changed files since last commit
         set -l num_changed_files (git status --short | wc -l)
         if test $num_changed_files -gt 0
