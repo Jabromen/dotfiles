@@ -148,7 +148,11 @@ require('lazy').setup({
     -- See `:help indent_blankline.txt`
     main = "ibl",
     opts = {
+      indent = {
+        char = '│',
+      },
       scope = {
+        char = '│',
         show_start = false,
         show_end = false,
       }
