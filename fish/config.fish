@@ -13,5 +13,6 @@ end
 fish_add_path "$HOME/dotfiles/utils"
 fish_add_path "$HOME/.fzf/bin"
 fish_add_path "$HOME/.pyenv/bin"
+fish_add_path "$HOME/.cargo/bin"
 
 alias tms=tmux-sessionizer
