@@ -44,4 +44,9 @@
 
 [merge]
     tool = vimdiff
-
+    conflictstyle = zdiff3
+[rebase]
+    autosquash = true
+[diff]
+    algorithm = histogram
+    context = 10
