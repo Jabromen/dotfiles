@@ -324,6 +324,7 @@ vim.keymap.set({'i', 'c'}, '<m-bs>', '<c-w>')
 -- Easier command entry, double tap ; to get old functionality
 vim.keymap.set({'n', 'v'}, ';', ':')
 vim.keymap.set({'n', 'v'}, ';;', ';')
+vim.keymap.set({'n', 'v'}, '-', ';')
 
 -- Easier split navigation
 vim.keymap.set('n', '<leader>j', '<C-w>j')
