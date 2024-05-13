@@ -405,7 +405,11 @@ pcall(require('telescope').load_extension, 'fzf')
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sk', require('telescope.builtin').keymaps, { desc = '[S]earch [K]eymaps' })
+vim.keymap.set('n', '<C-p>', require('telescope.builtin').find_files, { desc = 'Search Files' })
 vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
+vim.keymap.set('n', '<leader>sF', function()
+  require('telescope.builtin').find_files({ no_ignore = true, hidden = true })
+end, { desc = '[S]earch All [F]iles' })
 vim.keymap.set('n', '<leader>ss', require('telescope.builtin').builtin, { desc = '[S]earch [S]elect Telescope' })
 vim.keymap.set('n', '<leader>sw', function ()
   require('telescope.builtin').grep_string({ word_match = '-w' })
@@ -438,24 +442,6 @@ end, { desc = '[S]earch [/] in Open Files' })
 vim.keymap.set('n', '<leader>sn', function()
   require('telescope.builtin').find_files { cwd = vim.fn.stdpath 'config' }
 end, { desc = '[S]earch [N]eovim files' })
-
--- Ctrl+p to fuzzy find files inside or outside of a git repo
-vim.keymap.set('n', '<C-p>', function ()
-  -- Cache the results of "git rev-parse"
-  local is_inside_work_tree = {}
-  local opts = {}
-  local cwd = vim.fn.getcwd()
-  if is_inside_work_tree[cwd] == nil then
-    vim.fn.system("git rev-parse --is-inside-work-tree")
-    is_inside_work_tree[cwd] = vim.v.shell_error == 0
-  end
-
-  if is_inside_work_tree[cwd] then
-    require('telescope.builtin').git_files(opts)
-  else
-    require('telescope.builtin').find_files(opts)
-  end
-end, { desc = 'Search Git Files if in repo, Search All Files if not' })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
