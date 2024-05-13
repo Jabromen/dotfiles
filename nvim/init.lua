@@ -355,6 +355,15 @@ vim.keymap.set('n', '<c-b>', '<c-b>zz', { silent = true })
 
 vim.keymap.set('n', '<leader>udt', ':UndotreeToggle<cr>:UndotreeFocus<cr>', { silent = true, desc = 'Toggle Undotree' })
 
+vim.keymap.set('n', '<leader>mks', function()
+  if vim.v.this_session == '' then
+    vim.api.nvim_feedkeys(':mksession! ~/.sessions/', 'n', false)
+  else
+    vim.cmd('mksession! ' .. vim.v.this_session)
+    print('saved session `' .. vim.v.this_session .. '`')
+  end
+end, { desc = 'Make new session or save current one' })
+
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })

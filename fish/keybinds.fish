@@ -3,6 +3,8 @@ function last_history_item
 end
 abbr -a !! --position anywhere --function last_history_item
 
+abbr -a vims --position command --set-cursor 'vim -S ~/.sessions/%'
+
 function fish_user_key_bindings
     for mode in default insert visual
         # ctrl+o
