@@ -10,7 +10,7 @@
     di = diff
     dc = diff --cached
     dio = !git diff origin/"$(git symbolic-ref --short HEAD)"
-    amend = commit --amend
+    amend = ci --amend
     aa = add --all
     ff = merge --ff-only
     noff = merge --no-ff
