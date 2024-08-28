@@ -301,6 +301,8 @@ vim.api.nvim_create_autocmd('BufReadPost', {
   end
 })
 
+vim.g.netrw_banner = 0
+
 -- [[ Basic Keymaps ]]
 
 -- Keymaps for better default experience
