@@ -14,7 +14,11 @@ def columns(row: str) -> list[str]:
     """
     Convert a table row from a string to a list of columns with leading and trailing whitespace stripped.
     """
-    return [col.strip() for col in row.strip().strip("|").split("|")]
+    row = row.strip()
+    # Only strip single "|" from ends, since str.strip("|") will remove multiple
+    row = row[1:] if row[0] == "|" else row
+    row = row[:-1] if row[-1] == "|" else row
+    return [col.strip() for col in row.split("|")]
 
 
 def column_widths(table: list[str]) -> Iterator[list[int]]:
